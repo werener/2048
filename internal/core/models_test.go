@@ -38,8 +38,9 @@ func TestRow(t *testing.T) {
 		expectedResult []number
 		expectedError  error
 	}{
-		// {"fetch row", 1, []number{0, 0, 2, 4}, nil},
-		{"fetch row", 4, []number{}, IndexOutOfRange},
+		{"any row", 1, []number{0, 0, 2, 4}, nil},
+		{"last row", 3, []number{0, 2, 0, 32}, nil},
+		{"out of bounds", 4, []number{}, IndexOutOfRange},
 	}
 
 	for _, tt := range tests {
@@ -52,7 +53,37 @@ func TestRow(t *testing.T) {
 
 			for i := range result {
 				if result[i].Value != tt.expectedResult[i] {
-					t.Errorf("\nExpected %v\nGot %v (index %d doesn't match)", mapToValues(result), tt.expectedResult, i)
+					t.Errorf("\nExpected %v\nGot %v", tt.expectedResult, mapToValues(result))
+				}
+			}
+		})
+	}
+}
+
+func TestCol(t *testing.T) {
+	tests := []struct {
+		name           string
+		i              usize
+		expectedResult []number
+		expectedError  error
+	}{
+		{"any col", 1, []number{2, 0, 4, 2}, nil},
+		{"last col", 3, []number{8, 4, 8, 32}, nil},
+		{"out of bounds", 4, []number{}, IndexOutOfRange},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := testGrid.col(tt.i)
+
+			if err != tt.expectedError {
+				t.Errorf("\nExpected error '%v' to appear\nGot %v", tt.expectedError, err)
+			}
+
+			for i := range result {
+				if result[i].Value != tt.expectedResult[i] {
+					t.Errorf("\nExpected %v\nGot %v", tt.expectedResult, mapToValues(result))
+					break
 				}
 			}
 		})

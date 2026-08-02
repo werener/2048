@@ -47,12 +47,16 @@ func (grid *Grid) row(i usize) ([]Cell, error) {
 	return grid.Cells[i], nil
 }
 
-func (grid *Grid) col(j usize) []Cell {
-	col := make([]Cell, grid.Size)
-	for _, row := range grid.Cells {
-		col[j] = row[j]
+func (grid *Grid) col(j usize) ([]Cell, error) {
+	if j >= grid.Size {
+		return []Cell{}, IndexOutOfRange
 	}
-	return col
+
+	col := make([]Cell, grid.Size)
+	for i := range grid.Cells {
+		col[i] = grid.Cells[i][j]
+	}
+	return col, nil
 }
 
 func (grid *Grid) Print() {

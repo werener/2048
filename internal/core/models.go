@@ -3,10 +3,11 @@ package core
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
 type usize uint16
-type number uint64
+type Cell uint64
 
 var (
 	IndexOutOfRange = errors.New("Index out of range")
@@ -14,12 +15,14 @@ var (
 
 const LIMIT = 2048
 
+// Grid represents the aggregation of playing blocks
 type Grid struct {
 	Size  usize
 	Cells [][]Cell
 }
 
-func NewGrid(size usize, values [][]number) Grid {
+// NewGrid returns a new grid of provided size
+func NewGrid(size usize, values [][]Cell) Grid {
 	grid := make([][]Cell, size)
 	for i := range size {
 		grid[i] = make([]Cell, size)
@@ -28,59 +31,48 @@ func NewGrid(size usize, values [][]number) Grid {
 	if values != nil {
 		for i := range size {
 			for j := range size {
-				cell := &grid[i][j]
-
-				cell.Value = values[i][j]
-				if cell.Value == 0 {
-					cell.Empty = true
-				}
+				grid[i][j] = values[i][j]
 			}
 		}
 	}
 	return Grid{Size: size, Cells: grid}
 }
 
-func (grid *Grid) row(i usize) ([]Cell, error) {
-	if i >= grid.Size {
-		return []Cell{}, IndexOutOfRange
-	}
-	return grid.Cells[i], nil
-}
+// Repr returns a string representation of the grid
+func (g *Grid) Repr() string {
+	var buf strings.Builder
 
-func (grid *Grid) col(j usize) ([]Cell, error) {
-	if j >= grid.Size {
-		return []Cell{}, IndexOutOfRange
-	}
-
-	col := make([]Cell, grid.Size)
-	for i := range grid.Cells {
-		col[i] = grid.Cells[i][j]
-	}
-	return col, nil
-}
-
-func (grid *Grid) Print() {
-	for _, row := range grid.Cells {
-		for _, item := range row {
-			fmt.Print(item.Value, " ")
+	for i := range g.Size {
+		for j := range g.Size {
+			fmt.Fprintf(&buf, "%d ", g.Cells[i][j])
 		}
-		println()
+		fmt.Fprintln(&buf)
+	}
+
+	return buf.String()
+}
+
+// ShiftLeft simulates the change to state, made by swiping left
+func (g *Grid) ShiftLeft() {
+	for i := range g.Size {
+		row := g.Cells[i]
+
+		prevCellId := 0
+		firstEmptySpace := 0
+
+		for j := range g.Size {
+			cell := row[j]
+			prevCell := row[prevCellId]
+
+			if !isEmpty(prevCell) && prevCell == cell {
+				row[firstEmptySpace] = cell * 2
+
+			}
+		}
 	}
 }
 
-type Cell struct {
-	Empty bool
-	Value number
-}
-
-func NewCell() Cell {
-	return Cell{Empty: true}
-}
-
-func mapToValues(cells []Cell) []number {
-	values := make([]number, len(cells))
-	for i := range cells {
-		values[i] = cells[i].Value
-	}
-	return values
+// Checks if a cell is empty
+func isEmpty(cell Cell) bool {
+	return cell == 0
 }

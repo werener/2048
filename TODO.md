@@ -4,7 +4,7 @@ TUI:
 3. Add color schemas
 
 Core:
-1. Add score logic
+1. Move tile spawn distribution-related logic into tile submodule
 2. Add check for whether the shift is possible
 3. Add win/defeat logic
 

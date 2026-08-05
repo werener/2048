@@ -27,17 +27,6 @@ var transformations = map[Direction][]transformation{
 	Down:  {transpose, reverse},
 }
 
-// canShift checks if [Grid.Shift] in the provided [Direction] would make any changes to the grid.
-//
-// Does not mutate the grid. Pass by pointer is for performance reasons.
-func (g *Grid) canShift(direction Direction) bool {
-	for _, transformation := range transformations[direction] {
-		transformation(g)
-		defer transformation(g)
-	}
-	return g.canBind() || g.canCompress()
-}
-
 // Shift performs a shift in the provided [Direction].
 //
 // It returns the score gained from this action.
@@ -52,6 +41,18 @@ func (g *Grid) Shift(direction Direction) (score uint64) {
 	return g.bind()
 }
 
+// canShift checks if [Grid.Shift] in the provided [Direction] would make any changes to the grid.
+//
+// Does not mutate the grid. Pass by pointer is for performance reasons.
+func (g *Grid) canShift(direction Direction) bool {
+	for _, transformation := range transformations[direction] {
+		transformation(g)
+		defer transformation(g)
+	}
+	return g.canBind() || g.canCompress()
+
+}
+
 // canBind checks whether [Grid.bind] would change the state of the grid.
 //
 // Does not mutate the grid. Pass by pointer is for performance reasons.
@@ -59,12 +60,13 @@ func (g *Grid) canBind() bool {
 	for i := range g.Size {
 		var lastValue uint64 = 1
 		for j := range g.Size {
-			if g.Tiles[i][i].IsEmpty() {
+			if g.Tiles[i][j].IsEmpty() {
 				continue
 			}
 			if g.Tiles[i][j].Value == lastValue {
 				return true
 			}
+			lastValue = g.Tiles[i][j].Value
 		}
 	}
 	return false

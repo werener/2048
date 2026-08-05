@@ -61,6 +61,9 @@ func NewGrid(size usize) Grid {
 //
 // It returns the score, obtained by this move
 func (g *Grid) MakeMove(direction Direction) (score uint64) {
+	if !g.canShift(direction) {
+		return
+	}
 	score = g.Shift(direction)
 	g.SpawnTile(DefaultDistribution)
 	return

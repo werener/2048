@@ -4,8 +4,7 @@ TUI:
 3. Add color schemas
 
 Core:
-1. Add check for whether the shift is possible
-2. Add win/defeat logic
+1. Add win/defeat logic
 
 Long-term
 1. Mode for multiple games at the same time with button presses affecting all of them

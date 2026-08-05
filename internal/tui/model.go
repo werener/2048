@@ -37,8 +37,8 @@ var debugGrid = core.GridFromPreset(4, [][]uint64{
 
 func newGame() Game {
 	return Game{state: RUNNING,
-		grid: debugGrid,
-		// grid:  core.NewGrid(4),
+		// grid: debugGrid,
+		grid:  core.NewGrid(4),
 		score: 0,
 	}
 }

@@ -75,13 +75,13 @@ func (g *Grid) MakeMove(direction Direction) (score uint64) {
 func (g *Grid) Shift(direction Direction) (score uint64) {
 	switch direction {
 	case Up:
-		score = g.shiftUp()
+		return g.shiftUp()
 	case Left:
-		score = g.shiftLeft()
+		return g.shiftLeft()
 	case Down:
-		score = g.shiftDown()
+		return g.shiftDown()
 	case Right:
-		score = g.shiftRight()
+		return g.shiftRight()
 	}
 	return 0
 }
@@ -158,7 +158,7 @@ func (g *Grid) bind() (score uint64) {
 		for j := range g.Size - 1 {
 			cur, next := g.Tiles[i][j], g.Tiles[i][j+1]
 			if cur == next {
-				score = uint64(next.Value * 2)
+				score += uint64(next.Value * 2)
 				g.Tiles[i][j].Value = next.Value * 2
 				g.Tiles[i][j+1].makeVoid()
 				j++

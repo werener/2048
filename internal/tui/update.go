@@ -22,7 +22,6 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.score += m.grid.MakeMove(core.Down)
 		case key.Matches(msg, m.keys.Right):
 			m.score += m.grid.MakeMove(core.Right)
-
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
 		case key.Matches(msg, m.keys.Quit):

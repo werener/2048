@@ -118,6 +118,6 @@ func (k keyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
 		{k.Quit, k.Left},  // first column
 		{k.Up, k.Down},    // second column
-		{k.Right, k.Help}, // third column
+		{k.Help, k.Right}, // third column
 	}
 }

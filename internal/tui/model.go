@@ -29,9 +29,16 @@ type Game struct {
 	score uint64    // current score
 }
 
+var debugGrid = core.GridFromPreset(4, [][]uint64{
+	{0, 2, 4, 8},
+	{16, 64, 32, 0},
+	{128, 256, 512, 0},
+	{1024, 0, 2048, 0}})
+
 func newGame() Game {
 	return Game{state: RUNNING,
-		grid:  core.NewGrid(4),
+		grid: debugGrid,
+		// grid:  core.NewGrid(4),
 		score: 0,
 	}
 }
@@ -45,7 +52,6 @@ type model struct {
 
 func initialModel() model {
 	help := help.New()
-	// help.ShortSeparator = " |"
 
 	return model{
 		Game: newGame(),

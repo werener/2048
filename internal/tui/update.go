@@ -15,13 +15,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyPressMsg:
 		switch {
 		case key.Matches(msg, m.keys.Up):
-			m.grid.MakeMove(core.Up)
+			m.score += m.grid.MakeMove(core.Up)
 		case key.Matches(msg, m.keys.Left):
-			m.grid.MakeMove(core.Left)
+			m.score += m.grid.MakeMove(core.Left)
 		case key.Matches(msg, m.keys.Down):
-			m.grid.MakeMove(core.Down)
+			m.score += m.grid.MakeMove(core.Down)
 		case key.Matches(msg, m.keys.Right):
-			m.grid.MakeMove(core.Right)
+			m.score += m.grid.MakeMove(core.Right)
 
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll

@@ -4,9 +4,8 @@ TUI:
 3. Add color schemas
 
 Core:
-1. Add random elements to the game (initialization + new resources)
-2. Add score logic
-3. Add win/defeat logic
+1. Add score logic
+2. Add win/defeat logic
 
 Long-term
 1. Mode for multiple games at the same time with button presses affecting all of them

@@ -31,12 +31,7 @@ type Game struct {
 
 func newGame() Game {
 	return Game{state: RUNNING,
-		grid: core.NewGrid(4, [][]core.Cell{
-			{2, 0, 4, 8},
-			{16, 0, 32, 32},
-			{1024, 2048, 16, 64},
-			{512, 256, 128, 4},
-		}),
+		grid:  core.NewGrid(4),
 		score: 0,
 	}
 }

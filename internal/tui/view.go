@@ -65,8 +65,12 @@ func (m model) gridView(size int) string {
 }
 
 func (m model) CellView(cell core.Cell, size int) string {
+	repr := ""
+	if cell != core.EMPTY {
+		repr = fmt.Sprintf("%d", cell)
+	}
 
-	repr, fg, bg := colorCell(cell)
+	fg, bg := colorCell(cell)
 
 	style := lipgloss.NewStyle().Height(size).Width(size*2 - 1)
 
@@ -80,10 +84,8 @@ func (m model) CellView(cell core.Cell, size int) string {
 
 }
 
-func colorCell(cell core.Cell) (repr string, fg color.Color, bg color.Color) {
-	if cell != core.EMPTY {
-		repr = fmt.Sprintf("%d", cell)
-	}
+func colorCell(cell core.Cell) (fg color.Color, bg color.Color) {
+
 	switch cell {
 	case 2:
 		fg = lipgloss.Color("#9f9fc7")
@@ -97,6 +99,27 @@ func colorCell(cell core.Cell) (repr string, fg color.Color, bg color.Color) {
 	case 16:
 		fg = lipgloss.Color("#b4f8e7")
 		bg = lipgloss.Color("#328570")
+	case 32:
+		fg = lipgloss.Color("#aeffc0")
+		bg = lipgloss.Color("#236d39")
+	case 64:
+		fg = lipgloss.Color("#d8f5a3")
+		bg = lipgloss.Color("#7f9726")
+	case 128:
+		fg = lipgloss.Color("#ffd5a6")
+		bg = lipgloss.Color("#bd9100")
+	case 256:
+		fg = lipgloss.Color("#ffc582")
+		bg = lipgloss.Color("#c25700")
+	case 512:
+		fg = lipgloss.Color("#ff9182")
+		bg = lipgloss.Color("#8f0c0c")
+	case 1024:
+		fg = lipgloss.Color("#ffadc6")
+		bg = lipgloss.Color("#770059")
+	case 2048:
+		fg = lipgloss.Color("#ffadc6")
+		bg = lipgloss.Color("#55007c")
 	}
 	return
 }

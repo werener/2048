@@ -32,10 +32,10 @@ type Game struct {
 func newGame() Game {
 	return Game{state: RUNNING,
 		grid: core.NewGrid(4, [][]core.Cell{
-			{2, 0, 2, 8},
-			{2, 0, 2, 4},
-			{2, 4, 16, 8},
-			{4, 2, 4, 4},
+			{2, 0, 4, 8},
+			{16, 0, 32, 32},
+			{1024, 2048, 16, 64},
+			{512, 256, 128, 4},
 		}),
 		score: 0,
 	}

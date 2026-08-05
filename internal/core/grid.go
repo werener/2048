@@ -66,23 +66,6 @@ func (g *Grid) MakeMove(direction Direction) (score uint64) {
 	return
 }
 
-// Shift performs a shift in the provided direction.
-//
-// It returns the score gained from this action.
-func (g *Grid) Shift(direction Direction) (score uint64) {
-	switch direction {
-	case Up:
-		return g.shiftUp()
-	case Left:
-		return g.shiftLeft()
-	case Down:
-		return g.shiftDown()
-	case Right:
-		return g.shiftRight()
-	}
-	return 0
-}
-
 // SpawnTile spawns a new Tile on the field.
 //
 // Tile value is chosen based on the provided distribution.

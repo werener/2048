@@ -2,40 +2,76 @@ package core
 
 import "slices"
 
-// shiftLeft simulates the change to state, made by swiping left.
-func (g *Grid) shiftLeft() (score uint64) {
+// transformation is a reversable function, that rearranges the [Tile] 2D array in a grid.
+//
+// transformation(transformation(g)) = g
+type transformation func(*Grid)
+
+/*
+transformations relates the provided [Direction] of a shift to a slice of [transformation] functions,
+which should be consecutively applied before [Grid.bind]
+to perform a shift in the provided direction by performing a left shift.
+
+Usage example:
+
+	for _, transformation := range transformations[direction] {
+		transformation(grid)
+		defer transformation(grid)
+	}
+	score := grid.bind()
+*/
+var transformations = map[Direction][]transformation{
+	Left:  {},
+	Right: {reverse},
+	Up:    {transpose},
+	Down:  {transpose, reverse},
+}
+
+// canShift checks if [Grid.Shift] in the provided [Direction] would make any changes to the grid.
+//
+// Does not mutate the grid. Pass by pointer is for performance reasons.
+func (g *Grid) canShift(direction Direction) bool {
+	for _, transformation := range transformations[direction] {
+		transformation(g)
+		defer transformation(g)
+	}
+	return g.canBind() || g.canCompress()
+}
+
+// Shift performs a shift in the provided [Direction].
+//
+// It returns the score gained from this action.
+func (g *Grid) Shift(direction Direction) (score uint64) {
+	for _, transformation := range transformations[direction] {
+		transformation(g)
+		defer transformation(g)
+	}
 	g.compress()
-	score = g.bind()
-	g.compress()
-	return
+	defer g.compress()
+
+	return g.bind()
 }
 
-// shiftRight simulates the change to state, made by swiping right.
-func (g *Grid) shiftRight() (score uint64) {
-	g.reverse()
-	score = g.shiftLeft()
-	g.reverse()
-	return
-}
-
-// shiftUp simulates the change to state, made by swiping up.
-func (g *Grid) shiftUp() (score uint64) {
-	g.transpose()
-	score = g.shiftLeft()
-	g.transpose()
-	return
-}
-
-// shiftDown simulates the change to state, made by swiping down.
-func (g *Grid) shiftDown() (score uint64) {
-	g.transpose()
-	score = g.shiftRight()
-	g.transpose()
-	return
+// canBind checks whether [Grid.bind] would change the state of the grid.
+//
+// Does not mutate the grid. Pass by pointer is for performance reasons.
+func (g *Grid) canBind() bool {
+	for i := range g.Size {
+		var lastValue uint64 = 1
+		for j := range g.Size {
+			if g.Tiles[i][i].IsEmpty() {
+				continue
+			}
+			if g.Tiles[i][j].Value == lastValue {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // bind consumes every two horizontally adjacent tiles with equal values in the grid,
-// spawning a new tile inplace of the left one.
+// spawning a new tile in place of the left one.
 // The new tile has the combined value of these tiles.
 //
 // Created tiles cannot be bound in this iteration again
@@ -52,6 +88,25 @@ func (g *Grid) bind() (score uint64) {
 		}
 	}
 	return
+}
+
+// canBind checks whether [Grid.compress] would change the state of the grid.
+//
+// Does not mutate the grid. Pass by pointer is for performance reasons.
+func (g *Grid) canCompress() bool {
+	for i := range g.Size {
+		rowHasVoid := false
+		for j := range g.Size {
+			if g.Tiles[i][j].IsEmpty() {
+				rowHasVoid = true
+			} else {
+				if rowHasVoid {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
 
 // Alignes all tiles in the grid along the left border.
@@ -73,7 +128,7 @@ func (g *Grid) compress() {
 }
 
 // Transposes the grid.
-func (g *Grid) transpose() {
+func transpose(g *Grid) {
 	for i := range g.Size {
 		for j := i + 1; j < g.Size; j++ {
 			g.Tiles[i][j], g.Tiles[j][i] = g.Tiles[j][i], g.Tiles[i][j]
@@ -82,7 +137,7 @@ func (g *Grid) transpose() {
 }
 
 // Reverses the order of tiles in each row.
-func (g *Grid) reverse() {
+func reverse(g *Grid) {
 	for i := range g.Size {
 		slices.Reverse(g.Tiles[i])
 	}

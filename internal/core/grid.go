@@ -16,12 +16,10 @@ const (
 	Right
 )
 
-var DefaultDistribution = []uint64{4, 2, 2, 2, 2, 2, 2, 2, 2, 2}
-
-// Grid represents the aggregation of playing blocks.
+// Grid represents the aggregation of playing tiles.
 type Grid struct {
-	Size  usize
-	Tiles [][]Tile
+	Size  usize    // size of the grid. Grid is always (Size x Size)
+	Tiles [][]Tile // 2d array of all tiles
 }
 
 // GridFromPreset creates a grid with the provided configuration.
@@ -89,7 +87,7 @@ func (g *Grid) Shift(direction Direction) (score uint64) {
 // SpawnTile spawns a new Tile on the field.
 //
 // Tile value is chosen based on the provided distribution.
-// In case the distribution isn't provided the default distribution is used (10% for 4, 90% for 2).
+// In case the distribution isn't provided the [DefaultDistribution] is used.
 //
 // Tile position is chosen uniformly and randomly from the list of empty Tiles.
 // If the grid is full the spawn does not occur.
@@ -110,10 +108,8 @@ func (g *Grid) SpawnTile(distribution []uint64) {
 		return
 	}
 	void := voids[rand.Intn(len(voids))]
-	value := distribution[rand.Intn(len(distribution))]
 
-	tile := &g.Tiles[void[0]][void[1]]
-	tile.Value, tile.NewlySpawned = value, true
+	g.Tiles[void[0]][void[1]] = randomTile(distribution)
 }
 
 // shiftLeft simulates the change to state, made by swiping left.

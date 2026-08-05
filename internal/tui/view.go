@@ -38,20 +38,20 @@ func (m model) View() tea.View {
 }
 
 func (m model) gridView(size int) string {
-	numCells := int(m.grid.Size)
-	rows := make([]string, numCells)
+	numTiles := int(m.grid.Size)
+	rows := make([]string, numTiles)
 
-	// fit to the amount of Cells
+	// fit to the amount of Tiles
 	size = size / 8 * 8
 
-	cellSize := size / numCells
+	tileSize := size / numTiles
 
-	for i := range numCells {
-		cells := make([]string, numCells)
-		for j := range numCells {
-			cells[j] = m.CellView(m.grid.Cells[i][j], cellSize)
+	for i := range numTiles {
+		tiles := make([]string, numTiles)
+		for j := range numTiles {
+			tiles[j] = m.TileView(m.grid.Tiles[i][j], tileSize)
 		}
-		rows[i] = lipgloss.JoinHorizontal(lipgloss.Top, cells...)
+		rows[i] = lipgloss.JoinHorizontal(lipgloss.Top, tiles...)
 	}
 
 	grid := lipgloss.JoinVertical(lipgloss.Left, rows...)
@@ -64,13 +64,13 @@ func (m model) gridView(size int) string {
 		Render(grid)
 }
 
-func (m model) CellView(cell core.Cell, size int) string {
+func (m model) TileView(tile core.Tile, size int) string {
 	repr := ""
-	if cell != core.EMPTY {
-		repr = fmt.Sprintf("%d", cell)
+	if tile != core.EMPTY {
+		repr = fmt.Sprintf("%d", tile)
 	}
 
-	bg, fg := colorCell(cell)
+	bg, fg := colorTile(tile)
 	style := lipgloss.NewStyle().
 		Height(size).Width(size*2 - 1).
 		AlignHorizontal(lipgloss.Center).AlignVertical(lipgloss.Center).
@@ -79,8 +79,8 @@ func (m model) CellView(cell core.Cell, size int) string {
 	return style.Render(repr)
 }
 
-func colorCell(cell core.Cell) (bg color.Color, fg color.Color) {
-	switch cell {
+func colorTile(tile core.Tile) (bg color.Color, fg color.Color) {
+	switch tile {
 	case 2:
 		fg = lipgloss.Color("#9f9fc7")
 		bg = lipgloss.Color("#2c2c79")

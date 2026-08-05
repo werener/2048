@@ -6,7 +6,7 @@ import (
 )
 
 type usize uint16
-type Cell uint64
+type Tile uint64
 type Direction int8
 
 const (
@@ -15,58 +15,58 @@ const (
 	Down
 	Right
 )
-const EMPTY Cell = 0
+const EMPTY Tile = 0
 
-var DefaultDistribution = []Cell{4, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+var DefaultDistribution = []Tile{4, 2, 2, 2, 2, 2, 2, 2, 2, 2}
 
 // Grid represents the aggregation of playing blocks.
 type Grid struct {
 	Size  usize
-	Cells [][]Cell
+	Tiles [][]Tile
 }
 
 // GridFromPreset creates a grid with the provided configuration.
-func GridFromPreset(size usize, values [][]Cell) Grid {
+func GridFromPreset(size usize, values [][]Tile) Grid {
 	// if values were provided and are correctly sized
 	if values != nil &&
 		len(values) == int(size) &&
 		len(values[0]) == int(size) {
-		return Grid{Size: size, Cells: values}
+		return Grid{Size: size, Tiles: values}
 	}
 
 	// if values were not provided or are incorrect - create a fresh grid
-	grid := make([][]Cell, size)
+	grid := make([][]Tile, size)
 	for i := range size {
-		grid[i] = make([]Cell, size)
+		grid[i] = make([]Tile, size)
 	}
 
-	return Grid{Size: size, Cells: grid}
+	return Grid{Size: size, Tiles: grid}
 }
 
-// NewGrid creates an empty grid and spawns two random cells in it.
+// NewGrid creates an empty grid and spawns two random tiles in it.
 func NewGrid(size usize) Grid {
-	grid := make([][]Cell, size)
+	grid := make([][]Tile, size)
 	for i := range size {
-		grid[i] = make([]Cell, size)
+		grid[i] = make([]Tile, size)
 	}
 
-	g := Grid{Size: size, Cells: grid}
-	g.SpawnCell(DefaultDistribution)
-	g.SpawnCell(DefaultDistribution)
+	g := Grid{Size: size, Tiles: grid}
+	g.SpawnTile(DefaultDistribution)
+	g.SpawnTile(DefaultDistribution)
 
 	return g
 }
 
 // MakeMove performs a full move cycle in the following order:
-//  1. Shifts all cells in the provided direction;
-//  2. Combines adjacent cells with equal values;
-//  3. Shifts all cells in the provided direction;
-//  4. Spawns a new random cell, using [Grid.SpawnCell] with [DefaultDistribution].
+//  1. Shifts all tiles in the provided direction;
+//  2. Combines adjacent tiles with equal values;
+//  3. Shifts all tiles in the provided direction;
+//  4. Spawns a new random tile, using [Grid.SpawnTile] with [DefaultDistribution].
 //
 // It returns the score, obtained by this move
 func (g *Grid) MakeMove(direction Direction) (score uint64) {
 	score = g.Shift(direction)
-	g.SpawnCell(DefaultDistribution)
+	g.SpawnTile(DefaultDistribution)
 	return
 }
 
@@ -87,14 +87,14 @@ func (g *Grid) Shift(direction Direction) (score uint64) {
 	return 0
 }
 
-// SpawnCell spawns a new Cell on the field.
+// SpawnTile spawns a new Tile on the field.
 //
-// Cell value is chosen based on the provided distribution.
+// Tile value is chosen based on the provided distribution.
 // In case the distribution isn't provided the default distribution is used (10% for 4, 90% for 2).
 //
-// Cell position is chosen uniformly and randomly from the list of Cells.
+// Tile position is chosen uniformly and randomly from the list of Tiles.
 // If the grid is full the spawn does not occur.
-func (g *Grid) SpawnCell(distribution []Cell) {
+func (g *Grid) SpawnTile(distribution []Tile) {
 	if distribution == nil {
 		distribution = DefaultDistribution
 	}
@@ -102,7 +102,7 @@ func (g *Grid) SpawnCell(distribution []Cell) {
 	voids := [][]usize{}
 	for i := range g.Size {
 		for j := range g.Size {
-			if g.Cells[i][j] == EMPTY {
+			if g.Tiles[i][j] == EMPTY {
 				voids = append(voids, []usize{i, j})
 			}
 		}
@@ -113,7 +113,7 @@ func (g *Grid) SpawnCell(distribution []Cell) {
 	void := voids[rand.Intn(len(voids))]
 	value := distribution[rand.Intn(len(distribution))]
 
-	g.Cells[void[0]][void[1]] = value
+	g.Tiles[void[0]][void[1]] = value
 }
 
 // shiftLeft simulates the change to state, made by swiping left.
@@ -148,19 +148,19 @@ func (g *Grid) shiftDown() (score uint64) {
 	return
 }
 
-// bind consumes every two horizontally adjacent cells with equal values in the grid,
-// spawning a new cell inplace of the left one.
-// The new cell has the combined value of these cells.
+// bind consumes every two horizontally adjacent tiles with equal values in the grid,
+// spawning a new tile inplace of the left one.
+// The new tile has the combined value of these tiles.
 //
-// Created cells cannot be bound in this iteration again
+// Created tiles cannot be bound in this iteration again
 func (g *Grid) bind() (score uint64) {
 	for i := range g.Size {
 		for j := range g.Size - 1 {
-			cur, next := g.Cells[i][j], g.Cells[i][j+1]
+			cur, next := g.Tiles[i][j], g.Tiles[i][j+1]
 			if cur == next {
 				score = uint64(next * 2)
-				g.Cells[i][j] = next * 2
-				g.Cells[i][j+1] = EMPTY
+				g.Tiles[i][j] = next * 2
+				g.Tiles[i][j+1] = EMPTY
 				j++
 			}
 		}
@@ -168,17 +168,17 @@ func (g *Grid) bind() (score uint64) {
 	return
 }
 
-// Alignes all cells in the grid along the left border.
+// Alignes all tiles in the grid along the left border.
 func (g *Grid) compress() {
 	for i := range g.Size {
 		var writeIdx usize = 0
 		for j := range g.Size {
-			if g.Cells[i][j] == EMPTY {
+			if g.Tiles[i][j] == EMPTY {
 				continue
 			}
 			if writeIdx != j {
-				g.Cells[i][writeIdx] = g.Cells[i][j]
-				g.Cells[i][j] = EMPTY
+				g.Tiles[i][writeIdx] = g.Tiles[i][j]
+				g.Tiles[i][j] = EMPTY
 			}
 			writeIdx++
 		}
@@ -189,14 +189,14 @@ func (g *Grid) compress() {
 func (g *Grid) transpose() {
 	for i := range g.Size {
 		for j := i + 1; j < g.Size; j++ {
-			g.Cells[i][j], g.Cells[j][i] = g.Cells[j][i], g.Cells[i][j]
+			g.Tiles[i][j], g.Tiles[j][i] = g.Tiles[j][i], g.Tiles[i][j]
 		}
 	}
 }
 
-// Reverses the order of cells in each row.
+// Reverses the order of tiles in each row.
 func (g *Grid) reverse() {
 	for i := range g.Size {
-		slices.Reverse(g.Cells[i])
+		slices.Reverse(g.Tiles[i])
 	}
 }

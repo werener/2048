@@ -112,7 +112,8 @@ func (g *Grid) SpawnTile(distribution []uint64) {
 	void := voids[rand.Intn(len(voids))]
 	value := distribution[rand.Intn(len(distribution))]
 
-	g.Tiles[void[0]][void[1]].Value = value
+	tile := &g.Tiles[void[0]][void[1]]
+	tile.Value, tile.NewlySpawned = value, true
 }
 
 // shiftLeft simulates the change to state, made by swiping left.
@@ -172,6 +173,7 @@ func (g *Grid) compress() {
 	for i := range g.Size {
 		var writeIdx usize = 0
 		for j := range g.Size {
+			g.Tiles[i][j].NewlySpawned = false
 			if g.Tiles[i][j].IsEmpty() {
 				continue
 			}

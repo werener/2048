@@ -71,7 +71,9 @@ func (m model) TileView(tile core.Tile, size int) string {
 		Height(size).Width(size*2 - 1).
 		AlignHorizontal(lipgloss.Center).AlignVertical(lipgloss.Center).
 		Background(bg).Foreground(fg)
-
+	if tile.NewlySpawned {
+		style = style.BorderStyle(lipgloss.DoubleBorder()).BorderForeground(fg).BorderBackground(bg)
+	}
 	return style.Render(repr)
 }
 

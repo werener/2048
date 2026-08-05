@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"fmt"
 	"image/color"
 
 	tea "charm.land/bubbletea/v2"
@@ -65,10 +64,7 @@ func (m model) gridView(size int) string {
 }
 
 func (m model) TileView(tile core.Tile, size int) string {
-	repr := ""
-	if tile != core.EMPTY {
-		repr = fmt.Sprintf("%d", tile)
-	}
+	repr := tile.Repr()
 
 	bg, fg := colorTile(tile)
 	style := lipgloss.NewStyle().
@@ -80,7 +76,7 @@ func (m model) TileView(tile core.Tile, size int) string {
 }
 
 func colorTile(tile core.Tile) (bg color.Color, fg color.Color) {
-	switch tile {
+	switch tile.Value {
 	case 2:
 		fg = lipgloss.Color("#9f9fc7")
 		bg = lipgloss.Color("#2c2c79")

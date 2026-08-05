@@ -6,7 +6,7 @@ import (
 )
 
 type usize uint16
-type Tile uint64
+
 type Direction int8
 
 const (
@@ -15,9 +15,8 @@ const (
 	Down
 	Right
 )
-const EMPTY Tile = 0
 
-var DefaultDistribution = []Tile{4, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+var DefaultDistribution = []uint64{4, 2, 2, 2, 2, 2, 2, 2, 2, 2}
 
 // Grid represents the aggregation of playing blocks.
 type Grid struct {
@@ -26,12 +25,12 @@ type Grid struct {
 }
 
 // GridFromPreset creates a grid with the provided configuration.
-func GridFromPreset(size usize, values [][]Tile) Grid {
+func GridFromPreset(size usize, values [][]uint64) Grid {
 	// if values were provided and are correctly sized
 	if values != nil &&
 		len(values) == int(size) &&
 		len(values[0]) == int(size) {
-		return Grid{Size: size, Tiles: values}
+		return Grid{Size: size, Tiles: toTiles(values)}
 	}
 
 	// if values were not provided or are incorrect - create a fresh grid
@@ -92,9 +91,9 @@ func (g *Grid) Shift(direction Direction) (score uint64) {
 // Tile value is chosen based on the provided distribution.
 // In case the distribution isn't provided the default distribution is used (10% for 4, 90% for 2).
 //
-// Tile position is chosen uniformly and randomly from the list of Tiles.
+// Tile position is chosen uniformly and randomly from the list of empty Tiles.
 // If the grid is full the spawn does not occur.
-func (g *Grid) SpawnTile(distribution []Tile) {
+func (g *Grid) SpawnTile(distribution []uint64) {
 	if distribution == nil {
 		distribution = DefaultDistribution
 	}
@@ -102,7 +101,7 @@ func (g *Grid) SpawnTile(distribution []Tile) {
 	voids := [][]usize{}
 	for i := range g.Size {
 		for j := range g.Size {
-			if g.Tiles[i][j] == EMPTY {
+			if g.Tiles[i][j].IsEmpty() {
 				voids = append(voids, []usize{i, j})
 			}
 		}
@@ -113,7 +112,7 @@ func (g *Grid) SpawnTile(distribution []Tile) {
 	void := voids[rand.Intn(len(voids))]
 	value := distribution[rand.Intn(len(distribution))]
 
-	g.Tiles[void[0]][void[1]] = value
+	g.Tiles[void[0]][void[1]].Value = value
 }
 
 // shiftLeft simulates the change to state, made by swiping left.
@@ -158,9 +157,9 @@ func (g *Grid) bind() (score uint64) {
 		for j := range g.Size - 1 {
 			cur, next := g.Tiles[i][j], g.Tiles[i][j+1]
 			if cur == next {
-				score = uint64(next * 2)
-				g.Tiles[i][j] = next * 2
-				g.Tiles[i][j+1] = EMPTY
+				score = uint64(next.Value * 2)
+				g.Tiles[i][j].Value = next.Value * 2
+				g.Tiles[i][j+1].makeVoid()
 				j++
 			}
 		}
@@ -173,12 +172,12 @@ func (g *Grid) compress() {
 	for i := range g.Size {
 		var writeIdx usize = 0
 		for j := range g.Size {
-			if g.Tiles[i][j] == EMPTY {
+			if g.Tiles[i][j].IsEmpty() {
 				continue
 			}
 			if writeIdx != j {
 				g.Tiles[i][writeIdx] = g.Tiles[i][j]
-				g.Tiles[i][j] = EMPTY
+				g.Tiles[i][j].makeVoid()
 			}
 			writeIdx++
 		}

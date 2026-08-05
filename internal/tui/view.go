@@ -20,8 +20,8 @@ func (m model) View() tea.View {
 
 	availableSquare := min(m.width/2, m.height)
 
-	// account for help menu and margin
-	gridSize := availableSquare - 2 - (2 * margin)
+	// account for help menu, score and margin
+	gridSize := availableSquare - 2 - 1 - (2 * margin)
 
 	// for adding gaps and padding
 	grid := m.gridView(gridSize)
@@ -70,22 +70,16 @@ func (m model) CellView(cell core.Cell, size int) string {
 		repr = fmt.Sprintf("%d", cell)
 	}
 
-	fg, bg := colorCell(cell)
+	bg, fg := colorCell(cell)
+	style := lipgloss.NewStyle().
+		Height(size).Width(size*2 - 1).
+		AlignHorizontal(lipgloss.Center).AlignVertical(lipgloss.Center).
+		Background(bg).Foreground(fg)
 
-	style := lipgloss.NewStyle().Height(size).Width(size*2 - 1)
-
-	style = style.BorderStyle(lipgloss.NormalBorder()).
-		AlignHorizontal(lipgloss.Center).
-		AlignVertical(lipgloss.Center).
-		BorderForeground(fg).
-		BorderBackground(bg).
-		Background(bg)
 	return style.Render(repr)
-
 }
 
-func colorCell(cell core.Cell) (fg color.Color, bg color.Color) {
-
+func colorCell(cell core.Cell) (bg color.Color, fg color.Color) {
 	switch cell {
 	case 2:
 		fg = lipgloss.Color("#9f9fc7")
@@ -118,7 +112,7 @@ func colorCell(cell core.Cell) (fg color.Color, bg color.Color) {
 		fg = lipgloss.Color("#ffadc6")
 		bg = lipgloss.Color("#770059")
 	case 2048:
-		fg = lipgloss.Color("#ffadc6")
+		fg = lipgloss.Color("#f9ffc2")
 		bg = lipgloss.Color("#55007c")
 	}
 	return

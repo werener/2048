@@ -108,28 +108,60 @@ func colorTile(tile core.Tile) (
 	border color.Color, newlySpawnedBorder color.Color,
 ) {
 	switch tile.Value {
-	case 2:
+	case 1 << 0:
+		return
+	case 1 << 1:
 		bg = styling.Color("#2c2c79")
-	case 4:
+	case 1 << 2:
 		bg = styling.Color("#286994")
-	case 8:
+	case 1 << 3:
 		bg = styling.Color("#438594")
-	case 16:
+	case 1 << 4:
 		bg = styling.Color("#328570")
-	case 32:
+	case 1 << 5:
 		bg = styling.Color("#236d39")
-	case 64:
+	case 1 << 6:
 		bg = styling.Color("#7f9726")
-	case 128:
+	case 1 << 7:
 		bg = styling.Color("#bd9100")
-	case 256:
+	case 1 << 8:
 		bg = styling.Color("#c25700")
-	case 512:
+	case 1 << 9:
 		bg = styling.Color("#8f0c0c")
-	case 1024:
+	case 1 << 10:
 		bg = styling.Color("#770059")
-	case 2048:
+	case 1 << 11:
 		bg = styling.Color("#55007c")
+	case 1 << 12:
+		bg = styling.Color("#393a3a")
+		fg = styling.Lighten(bg, 0.5)
+		border = styling.Color("#ff3a5b")
+		return
+	case 1 << 13:
+		bg = styling.Color("#393a3a")
+		fg = styling.Lighten(bg, 0.5)
+		border = styling.Color("#6b0380")
+		return
+	case 1 << 14:
+		bg = styling.Color("#393a3a")
+		fg = styling.Lighten(bg, 0.5)
+		border = styling.Color("#00179b")
+		return
+	case 1 << 15:
+		bg = styling.Color("#393a3a")
+		fg = styling.Lighten(bg, 0.5)
+		border = styling.Color("#00c41a")
+		return
+	case 1 << 16:
+		bg = styling.Color("#393a3a")
+		fg = styling.Lighten(bg, 0.5)
+		border = styling.Color("#fffb00")
+		return
+	case 1 << 17:
+		bg = styling.Color("#393a3a")
+		fg = styling.Lighten(bg, 0.5)
+		border = styling.Color("#ff9100")
+		return
 	}
 
 	fg = styling.Lighten(bg, 0.5)

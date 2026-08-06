@@ -14,7 +14,7 @@ var debugGrid = core.GridFromPreset(4, [][]uint64{
 	{0, 2, 4, 8},
 	{16, 64, 32, 0},
 	{128, 256, 512, 0},
-	{1024, 0, 1024, 0}})
+	{1024, 0, 1024, 2048}})
 
 type Size struct {
 	width  int

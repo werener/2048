@@ -54,6 +54,8 @@ func (m model) updateRunning(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.game.MakeMove(core.Down)
 		case key.Matches(msg, m.keys.Right):
 			m.game.MakeMove(core.Right)
+		case key.Matches(msg, m.keys.Undo):
+			// todo
 		}
 	}
 	return m, nil
@@ -75,10 +77,12 @@ func (m model) updateWin(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 type keyMap struct {
-	Up       key.Binding
-	Down     key.Binding
-	Left     key.Binding
-	Right    key.Binding
+	Up    key.Binding
+	Down  key.Binding
+	Left  key.Binding
+	Right key.Binding
+	Undo  key.Binding
+
 	Help     key.Binding
 	Quit     key.Binding
 	Restart  key.Binding
@@ -101,6 +105,10 @@ var keys = keyMap{
 	Right: key.NewBinding(
 		key.WithKeys("right", "l", "d"),
 		key.WithHelp("d|→|l", "Right"),
+	),
+	Undo: key.NewBinding(
+		key.WithKeys("ctrl+z", "u", "del"),
+		key.WithHelp("u|Ctrl+Z|Del", "Undo"),
 	),
 
 	Help: key.NewBinding(
@@ -131,8 +139,8 @@ func (k keyMap) FullHelp() [][]key.Binding {
 		a s d
 	*/
 	return [][]key.Binding{
-		{k.Quit, k.Left},     // first column
-		{k.Up, k.Down},       // second column
-		{k.Restart, k.Right}, // third column
+		{k.Quit, k.Left},       // first column
+		{k.Up, k.Down, k.Undo}, // second column
+		{k.Restart, k.Right},   // third column
 	}
 }

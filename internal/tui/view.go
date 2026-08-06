@@ -24,7 +24,7 @@ func (m model) View() tea.View {
 	availableSquare := min(m.width/2, m.height)
 
 	// account for help menu, score and margin
-	gridSize := availableSquare - 2 - 2 - (2 * margin)
+	gridSize := availableSquare - 3 - 2 - (2 * margin)
 
 	grid := m.gridView(gridSize)
 

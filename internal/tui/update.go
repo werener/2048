@@ -39,7 +39,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 		if gameState == core.WIN {
 			if key.Matches(msg, m.keys.Continue) {
-
+				m.game = games.EndlessFromGame(m.game)
 			}
 		}
 	}

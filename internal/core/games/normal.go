@@ -4,7 +4,7 @@ import m "github.com/werener/2048.git/internal/core/models"
 
 // NormalGame is a game, which follows general rules of 2048
 //
-// Implements [Game] interface
+// Implements [m.Game] interface
 type NormalGame struct {
 	grid  m.Grid
 	score m.Score
@@ -25,7 +25,7 @@ func (game *NormalGame) Grid() *m.Grid {
 	return &game.grid
 }
 
-// state returns the current state of the game
+// State returns the current state of the game
 func (game *NormalGame) State() m.GameState {
 	for i := range game.grid.Size {
 		for j := range game.grid.Size {

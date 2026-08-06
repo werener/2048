@@ -36,7 +36,7 @@ type Game interface {
 }
 
 /*
-	GLOBAL VALUES SECTION
+	GLOBAL CONSTANTS SECTION
 */
 
 // emptyTileValue determines what value represents that a [Tile] is empty
@@ -44,7 +44,19 @@ const emptyTileValue uint64 = 0
 
 // DefaultDistribution is an array that represents
 // the distribution of new tile spawns in a normal game
+//
+// Distribution:
+//   - 2 - 90%
+//   - 4 - 10%
 var DefaultDistribution = []uint64{4, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+
+// EndlessDistribution is an array that represents
+// the distribution of new tile spawns in an endless game
+//
+// Distribution:
+//   - 2 - 50%
+//   - 4 - 50%
+var EndlessDistribution = []uint64{4, 4, 4, 4, 4, 2, 2, 2, 2, 2}
 
 /*
 transformations relates the provided [Direction] of a shift to a slice of [transformation] functions,

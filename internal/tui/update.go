@@ -7,6 +7,7 @@ import (
 )
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	gameState := m.game.State()
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
@@ -23,7 +24,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		// read move keys only if the game is active
-		if m.game.State() == core.RUNNING {
+		if gameState == core.RUNNING {
 			switch {
 			case key.Matches(msg, m.keys.Up):
 				m.game.MakeMove(core.Up)
@@ -35,18 +36,24 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.game.MakeMove(core.Right)
 			}
 		}
+		if gameState == core.WIN {
+			if key.Matches(msg, m.keys.Continue) {
+
+			}
+		}
 	}
 	return m, nil
 }
 
 type keyMap struct {
-	Up      key.Binding
-	Down    key.Binding
-	Left    key.Binding
-	Right   key.Binding
-	Help    key.Binding
-	Quit    key.Binding
-	Restart key.Binding
+	Up       key.Binding
+	Down     key.Binding
+	Left     key.Binding
+	Right    key.Binding
+	Help     key.Binding
+	Quit     key.Binding
+	Restart  key.Binding
+	Continue key.Binding
 }
 
 var keys = keyMap{
@@ -78,6 +85,11 @@ var keys = keyMap{
 	Restart: key.NewBinding(
 		key.WithKeys("r", "R"),
 		key.WithHelp("[r]", "Restart"),
+	),
+
+	Continue: key.NewBinding(
+		key.WithKeys("c", "C"),
+		key.WithHelp("[c]", "Continue"),
 	),
 }
 

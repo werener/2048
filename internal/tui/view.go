@@ -139,18 +139,24 @@ func (m model) gameEnd() string {
 	var popupStyle lipgloss.Style
 	switch m.game.State() {
 	case core.WIN:
-		msg = "YOU WIN!"
+		msg = "YOU WIN!\n" +
+			"'r' to start over\n" +
+			"'c' to continue endless\n" +
+			"'q' to quit"
 		popupStyle = lipgloss.NewStyle().
-			Background(lipgloss.Color("#d0df00")).Foreground(lipgloss.Color("#200f24")).
+			Background(lipgloss.Color("#d0df00")).
+			Foreground(lipgloss.Color("#200f24")).
 			Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("#d0df00")).
 			Padding(1, 4)
 	case core.DEFEAT:
-		msg = "GAME OVER"
+		msg = "GAME OVER\n" +
+			"'r' to restart\n" +
+			"'q' to quit"
 		popupStyle = lipgloss.NewStyle().
-			Background(lipgloss.Color("#ce493f")). // Красный
-			Foreground(lipgloss.Color("#caffe4")). // Белый текст
+			Background(lipgloss.Color("#ce493f")).
+			Foreground(lipgloss.Color("#caffe4")).
 			Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("160")).
 			Padding(1, 4)
 	}
-	return popupStyle.Render(msg + "\n'r' to restart\n'q' to quit")
+	return popupStyle.Render(msg)
 }

@@ -63,7 +63,7 @@ func (game *NormalGame) State() GameState {
 MakeMove performs a full move cycle in the following order:
 
  1. Checks if a move in this direction will change the state of the board.
-    If not - returns. Otherwise, executes steps (2-5).
+    If not - returns. Otherwise, executes steps 2-6.
  2. Shifts all tiles in the provided direction;
  3. Combines adjacent tiles with equal values;
  4. Shifts all tiles in the provided direction;

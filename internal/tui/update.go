@@ -9,12 +9,15 @@ import (
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	gameState := m.game.State()
+
 	switch msg := msg.(type) {
+
 	case tea.WindowSizeMsg:
 		m.width = msg.Width
 		m.height = msg.Height
 
 	case tea.KeyPressMsg:
+		// always allow to expand Help, Restart and Quit
 		switch {
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
@@ -25,21 +28,46 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		// read move keys only if the game is active
-		if gameState == core.RUNNING {
-			switch {
-			case key.Matches(msg, m.keys.Up):
-				m.game.MakeMove(core.Up)
-			case key.Matches(msg, m.keys.Left):
-				m.game.MakeMove(core.Left)
-			case key.Matches(msg, m.keys.Down):
-				m.game.MakeMove(core.Down)
-			case key.Matches(msg, m.keys.Right):
-				m.game.MakeMove(core.Right)
-			}
+		switch gameState {
+		case core.RUNNING:
+			return m.updateRunning(msg)
+		case core.WIN:
+			return m.updateWin(msg)
 		}
-		if gameState == core.WIN {
-			if key.Matches(msg, m.keys.Continue) {
+	default:
+		if m.showEndlessPopup {
+			m.showEndlessPopup = false
+			m.game = games.EndlessFromGame(m.game)
+		}
+	}
+	return m, nil
+}
+
+func (m model) updateRunning(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if msg, ok := msg.(tea.KeyPressMsg); ok {
+		switch {
+		case key.Matches(msg, m.keys.Up):
+			m.game.MakeMove(core.Up)
+		case key.Matches(msg, m.keys.Left):
+			m.game.MakeMove(core.Left)
+		case key.Matches(msg, m.keys.Down):
+			m.game.MakeMove(core.Down)
+		case key.Matches(msg, m.keys.Right):
+			m.game.MakeMove(core.Right)
+		}
+	}
+	return m, nil
+}
+
+func (m model) updateWin(msg tea.Msg) (tea.Model, tea.Cmd) {
+	if msg, ok := msg.(tea.KeyPressMsg); ok {
+		switch {
+		case key.Matches(msg, m.keys.Continue):
+			if m.showEndlessPopup {
+				m.showEndlessPopup = false
 				m.game = games.EndlessFromGame(m.game)
+			} else {
+				m.showEndlessPopup = true
 			}
 		}
 	}

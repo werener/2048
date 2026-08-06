@@ -38,8 +38,13 @@ func (m model) View() tea.View {
 
 	view := window.Render(grid + "\n" + score + "\n" + help)
 
-	if m.game.State() != core.RUNNING {
-		view = overlay.Center(view, m.gameEnd(), m.width, m.height)
+	gameState := m.game.State()
+	if m.showEndlessPopup {
+		view = overlay.Center(view, m.endlessPopup(), m.width, m.height)
+	} else if gameState == core.DEFEAT {
+		view = overlay.Center(view, m.defeatScreen(), m.width, m.height)
+	} else if gameState == core.WIN {
+		view = overlay.Center(view, m.winScreen(), m.width, m.height)
 	}
 
 	v := tea.NewView(view)
@@ -131,31 +136,4 @@ func colorTile(tile core.Tile) (
 	border = styling.Darken(bg, 0.15)
 	newlySpawnedBorder = styling.Lighten(border, 0.3)
 	return bg, fg, border, newlySpawnedBorder
-}
-
-func (m model) gameEnd() string {
-	var msg string
-	var popupStyle styling.Style
-	switch m.game.State() {
-	case core.WIN:
-		msg = "YOU WIN!\n" +
-			"'r' to start over\n" +
-			"'c' to continue endless\n" +
-			"'q' to quit"
-		popupStyle = styling.NewStyle().
-			Background(styling.Color("#d0df00")).
-			Foreground(styling.Color("#200f24")).
-			Border(styling.RoundedBorder()).BorderForeground(styling.Color("#d0df00")).
-			Padding(1, 4)
-	case core.DEFEAT:
-		msg = "GAME OVER\n" +
-			"'r' to restart\n" +
-			"'q' to quit"
-		popupStyle = styling.NewStyle().
-			Background(styling.Color("#ce493f")).
-			Foreground(styling.Color("#caffe4")).
-			Border(styling.RoundedBorder()).BorderForeground(styling.Color("160")).
-			Padding(1, 4)
-	}
-	return popupStyle.Render(msg)
 }

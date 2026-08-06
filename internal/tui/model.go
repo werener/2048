@@ -21,11 +21,19 @@ type Size struct {
 	height int
 }
 
+type Popups struct {
+	showEndlessPopup bool
+
+	showDefeatScreen bool
+	showWinScreen    bool
+}
+
 type model struct {
-	help help.Model // help component from Bubbles
-	keys keyMap     // active application keybinds
-	game core.Game  // current active game. Note: can be nil
-	Size            // termial window size
+	help   help.Model // help component from Bubbles
+	keys   keyMap     // active application keybinds
+	game   core.Game  // current active game. Note: can be nil
+	Size              // termial window size
+	Popups            // determines what popups are currently shown on screen
 }
 
 func initialModel() model {

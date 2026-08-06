@@ -2,35 +2,10 @@ package core
 
 import "slices"
 
-// transformation is a reversable function, that rearranges the [Tile] 2D array in a grid.
-//
-// transformation(transformation(g)) = g
-type transformation func(*Grid)
-
-/*
-transformations relates the provided [Direction] of a shift to a slice of [transformation] functions,
-which should be consecutively applied before [Grid.bind]
-to perform a shift in the provided direction by performing a left shift.
-
-Usage example:
-
-	for _, transformation := range transformations[direction] {
-		transformation(grid)
-		defer transformation(grid)
-	}
-	score := grid.bind()
-*/
-var transformations = map[Direction][]transformation{
-	Left:  {},
-	Right: {reverse},
-	Up:    {transpose},
-	Down:  {transpose, reverse},
-}
-
 // Shift performs a shift in the provided [Direction].
 //
 // It returns the score gained from this action.
-func (g *Grid) Shift(direction Direction) (score uint64) {
+func (g *Grid) Shift(direction Direction) Score {
 	for _, transformation := range transformations[direction] {
 		transformation(g)
 		defer transformation(g)
@@ -77,19 +52,19 @@ func (g *Grid) canBind() bool {
 // The new tile has the combined value of these tiles.
 //
 // Created tiles cannot be bound in this iteration again
-func (g *Grid) bind() (score uint64) {
+func (g *Grid) bind() (score Score) {
 	for i := range g.Size {
 		for j := range g.Size - 1 {
 			cur, next := g.Tiles[i][j], g.Tiles[i][j+1]
 			if cur == next {
-				score += uint64(next.Value * 2)
+				score += Score(next.Value * 2)
 				g.Tiles[i][j].Value = next.Value * 2
 				g.Tiles[i][j+1].makeVoid()
 				j++
 			}
 		}
 	}
-	return
+	return score
 }
 
 // canBind checks whether [Grid.compress] would change the state of the grid.

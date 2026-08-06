@@ -4,17 +4,6 @@ import (
 	"math/rand"
 )
 
-type usize uint16
-
-type Direction int8
-
-const (
-	Up Direction = iota
-	Left
-	Down
-	Right
-)
-
 // Grid represents the aggregation of playing tiles.
 type Grid struct {
 	Size  usize    // size of the grid. Grid is always (Size x Size)
@@ -51,22 +40,6 @@ func NewGrid(size usize) Grid {
 	g.SpawnTile(DefaultDistribution)
 
 	return g
-}
-
-// MakeMove performs a full move cycle in the following order:
-//  1. Shifts all tiles in the provided direction;
-//  2. Combines adjacent tiles with equal values;
-//  3. Shifts all tiles in the provided direction;
-//  4. Spawns a new random tile, using [Grid.SpawnTile] with [DefaultDistribution].
-//
-// It returns the score, obtained by this move
-func (g *Grid) MakeMove(direction Direction) (score uint64) {
-	if !g.canShift(direction) {
-		return
-	}
-	score = g.Shift(direction)
-	g.SpawnTile(DefaultDistribution)
-	return
 }
 
 // SpawnTile spawns a new Tile on the field.

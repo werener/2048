@@ -10,51 +10,29 @@ import (
 	"github.com/werener/2048.git/internal/core"
 )
 
-type GameState int
-
-const (
-	RUNNING GameState = iota
-	DEFEAT
-	DRAW
-	WIN
-)
-
-type Size struct {
-	width  int
-	height int
-}
-type Game struct {
-	state GameState // in what state the application is currently in
-	grid  core.Grid // grid, containing current state of the game
-	score uint64    // current score
-}
-
 var debugGrid = core.GridFromPreset(4, [][]uint64{
 	{0, 2, 4, 8},
 	{16, 64, 32, 0},
 	{128, 256, 512, 0},
 	{1024, 0, 2048, 0}})
 
-func newGame() Game {
-	return Game{state: RUNNING,
-		// grid: debugGrid,
-		grid:  core.NewGrid(4),
-		score: 0,
-	}
+type Size struct {
+	width  int
+	height int
 }
 
 type model struct {
-	help help.Model
-	keys keyMap // active application keybinds
-	Game        // fields, related to the game runtime
-	Size        // termial window size
+	help help.Model // help component from Bubbles
+	keys keyMap     // active application keybinds
+	game core.Game  // current active game. Note: can be nil
+	Size            // termial window size
 }
 
 func initialModel() model {
 	help := help.New()
 
 	return model{
-		Game: newGame(),
+		game: core.NewNormalGame(),
 		help: help,
 		keys: keys,
 	}

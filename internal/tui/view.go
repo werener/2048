@@ -32,7 +32,7 @@ func (m model) View() tea.View {
 
 	score := lipgloss.NewStyle().
 		Height(2).
-		Render(fmt.Sprintf("Your score: %d", m.score))
+		Render(fmt.Sprintf("Your score: %d", m.game.Score()))
 	view := window.Render(grid + "\n" + score + "\n" + help)
 
 	v := tea.NewView(view)
@@ -41,7 +41,7 @@ func (m model) View() tea.View {
 }
 
 func (m model) gridView(size int) string {
-	numTiles := int(m.grid.Size)
+	numTiles := int(m.game.Grid().Size)
 	rows := make([]string, numTiles)
 
 	// fit to the amount of Tiles
@@ -52,7 +52,7 @@ func (m model) gridView(size int) string {
 	for i := range numTiles {
 		tiles := make([]string, numTiles)
 		for j := range numTiles {
-			tiles[j] = m.tileView(m.grid.Tiles[i][j], tileSize)
+			tiles[j] = m.tileView(m.game.Grid().Tiles[i][j], tileSize)
 		}
 		rows[i] = lipgloss.JoinHorizontal(lipgloss.Top, tiles...)
 	}

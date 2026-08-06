@@ -5,10 +5,6 @@ import (
 	"math/rand"
 )
 
-const emptyValue uint64 = 0
-
-var DefaultDistribution = []uint64{4, 2, 2, 2, 2, 2, 2, 2, 2, 2} // Array, representing the default distribution of new tile spawns
-
 // Tile represents one Tile in a 2048 grid.
 type Tile struct {
 	Value        uint64 // value on the tile
@@ -17,7 +13,7 @@ type Tile struct {
 
 // IsEmpty checks if the tile contains its zero-value
 func (t Tile) IsEmpty() bool {
-	return t.Value == emptyValue
+	return t.Value == emptyTileValue
 }
 
 // Repr returns a string representation of the tile
@@ -40,7 +36,7 @@ func randomTile(distribution []uint64) Tile {
 
 // makeVoid sets the tile to its zero-value
 func (t *Tile) makeVoid() {
-	t.Value = emptyValue
+	t.Value = emptyTileValue
 }
 
 // newTile creates a new tile from a provided value.

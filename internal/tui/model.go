@@ -39,7 +39,7 @@ type model struct {
 func initialModel() model {
 	help := help.New()
 	game := games.NewNormalGame()
-	*game.Grid() = debugGrid
+	// *game.Grid() = debugGrid
 	return model{
 		game: game,
 		help: help,

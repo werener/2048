@@ -12,7 +12,11 @@ type NormalGame struct {
 
 // NewNormalGame initializes a [NormalGame]
 func NewNormalGame() *NormalGame {
-	return &NormalGame{grid: m.NewGrid(4)}
+	grid := m.NewGrid(4)
+	grid.SpawnTile(m.DefaultDistribution)
+	grid.SpawnTile(m.DefaultDistribution)
+
+	return &NormalGame{grid: grid}
 }
 
 // Score returns the current score of the game

@@ -57,5 +57,5 @@ func (game *EndlessGame) MakeMove(direction m.Direction) {
 	}
 	game.score += 2 * game.grid.Shift(direction)
 
-	game.grid.SpawnTile(m.DefaultDistribution)
+	game.grid.SpawnTile(m.EndlessDistribution)
 }

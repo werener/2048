@@ -55,8 +55,9 @@ var DefaultDistribution = []uint64{4, 2, 2, 2, 2, 2, 2, 2, 2, 2}
 //
 // Distribution:
 //   - 2 - 50%
-//   - 4 - 50%
-var EndlessDistribution = []uint64{4, 4, 4, 4, 4, 2, 2, 2, 2, 2}
+//   - 4 - 40%
+//   - 8 - 10%
+var EndlessDistribution = []uint64{8, 4, 4, 4, 4, 2, 2, 2, 2, 2}
 
 /*
 transformations relates the provided [Direction] of a shift to a slice of [transformation] functions,

@@ -28,7 +28,7 @@ func GridFromPreset(size usize, values [][]uint64) Grid {
 	return Grid{Size: size, Tiles: grid}
 }
 
-// NewGrid creates an empty grid and spawns two random tiles in it.
+// NewGrid creates an empty grid.
 func NewGrid(size usize) Grid {
 	grid := make([][]Tile, size)
 	for i := range size {
@@ -36,8 +36,6 @@ func NewGrid(size usize) Grid {
 	}
 
 	g := Grid{Size: size, Tiles: grid}
-	g.SpawnTile(DefaultDistribution)
-	g.SpawnTile(DefaultDistribution)
 
 	return g
 }

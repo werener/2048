@@ -6,7 +6,8 @@ import (
 
 	"charm.land/bubbles/v2/help"
 	tea "charm.land/bubbletea/v2"
-	"github.com/werener/2048.git/internal/core"
+	"github.com/werener/2048.git/internal/core/games"
+	core "github.com/werener/2048.git/internal/core/models"
 )
 
 var debugGrid = core.GridFromPreset(4, [][]uint64{
@@ -29,7 +30,7 @@ type model struct {
 
 func initialModel() model {
 	help := help.New()
-	game := core.NewNormalGame()
+	game := games.NewNormalGame()
 	*game.Grid() = debugGrid
 	return model{
 		game: game,

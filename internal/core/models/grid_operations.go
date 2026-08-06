@@ -1,4 +1,4 @@
-package core
+package models
 
 import "slices"
 
@@ -16,10 +16,10 @@ func (g *Grid) Shift(direction Direction) Score {
 	return g.bind()
 }
 
-// canShift checks if [Grid.Shift] in the provided [Direction] would make any changes to the grid.
+// CanShift checks if [Grid.Shift] in the provided [Direction] would make any changes to the grid.
 //
 // Does not mutate the grid. Pass by pointer is for performance reasons.
-func (g *Grid) canShift(direction Direction) bool {
+func (g *Grid) CanShift(direction Direction) bool {
 	for _, transformation := range transformations[direction] {
 		transformation(g)
 		defer transformation(g)

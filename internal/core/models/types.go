@@ -1,4 +1,4 @@
-package core
+package models
 
 /*
 	TYPES SECTION
@@ -10,6 +10,7 @@ package core
 type transformation func(*Grid)
 
 type usize uint16 // usize shows that a value is used for sizes
+type Score uint64 // Score shows that a value is used for game's score
 
 type Direction int8 // Direction enum type representing one of the four cardinal directions
 const (
@@ -18,6 +19,21 @@ const (
 	Down
 	Right
 )
+
+type GameState int // GameState shows the game's current state
+const (
+	RUNNING GameState = iota
+	DEFEAT
+	WIN
+)
+
+// Game interface represents a set of methods, needed for displaying every visible aspect of a game of 2048
+type Game interface {
+	MakeMove(direction Direction)
+	Score() (score Score)
+	Grid() *Grid
+	State() GameState
+}
 
 /*
 	GLOBAL VALUES SECTION

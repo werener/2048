@@ -8,32 +8,31 @@ import (
 	overlay "github.com/floatpane/bubble-overlay"
 
 	tea "charm.land/bubbletea/v2"
-	"charm.land/lipgloss/v2"
-	"github.com/werener/2048.git/internal/core"
+	styling "charm.land/lipgloss/v2"
+	core "github.com/werener/2048.git/internal/core/models"
 )
 
 func (m model) View() tea.View {
 	margin := 2
 
-	window := lipgloss.NewStyle().
+	window := styling.NewStyle().
 		Width(m.width).
 		Height(m.height).
 		Margin(margin).
-		Align(lipgloss.Center)
+		Align(styling.Center)
 
 	availableSquare := min(m.width/2, m.height)
 
 	// account for help menu, score and margin
 	gridSize := availableSquare - 2 - 2 - (2 * margin)
 
-	// for adding gaps and padding
 	grid := m.gridView(gridSize)
 
-	help := lipgloss.NewStyle().
+	help := styling.NewStyle().
 		Height(2).
 		Render(m.help.View(m.keys))
 
-	score := lipgloss.NewStyle().
+	score := styling.NewStyle().
 		Height(2).
 		Render(fmt.Sprintf("Your score: %d", m.game.Score()))
 
@@ -62,16 +61,16 @@ func (m model) gridView(size int) string {
 		for j := range numTiles {
 			tiles[j] = m.tileView(m.game.Grid().Tiles[i][j], tileSize)
 		}
-		rows[i] = lipgloss.JoinHorizontal(lipgloss.Top, tiles...)
+		rows[i] = styling.JoinHorizontal(styling.Top, tiles...)
 	}
 
-	grid := lipgloss.JoinVertical(lipgloss.Left, rows...)
+	grid := styling.JoinVertical(styling.Left, rows...)
 
-	return lipgloss.NewStyle().
+	return styling.NewStyle().
 		Height(size).
 		Width(size * 2).
-		AlignVertical(lipgloss.Center).AlignHorizontal(lipgloss.Center).
-		BorderStyle(lipgloss.NormalBorder()).
+		AlignVertical(styling.Center).AlignHorizontal(styling.Center).
+		BorderStyle(styling.NormalBorder()).
 		Render(grid)
 }
 
@@ -79,17 +78,17 @@ func (m model) tileView(tile core.Tile, size int) string {
 	repr := tile.Repr()
 
 	bg, fg, border, newlySpawnedBorder := colorTile(tile)
-	style := lipgloss.NewStyle().
+	style := styling.NewStyle().
 		// alignment
 		Height(size).Width(size*2 - 1).
-		AlignHorizontal(lipgloss.Center).AlignVertical(lipgloss.Center).
+		AlignHorizontal(styling.Center).AlignVertical(styling.Center).
 		// colors
 		Background(bg).Foreground(fg).
-		BorderStyle(lipgloss.NormalBorder()).
+		BorderStyle(styling.NormalBorder()).
 		BorderForeground(border).BorderBackground(bg)
 	// show if a tile has just been spawned
 	if tile.NewlySpawned {
-		style = style.BorderStyle(lipgloss.ASCIIBorder()).BorderForeground(newlySpawnedBorder)
+		style = style.BorderStyle(styling.ASCIIBorder()).BorderForeground(newlySpawnedBorder)
 	}
 	// if a tile is empty, don't show a border
 	if tile.IsEmpty() {
@@ -105,57 +104,57 @@ func colorTile(tile core.Tile) (
 ) {
 	switch tile.Value {
 	case 2:
-		bg = lipgloss.Color("#2c2c79")
+		bg = styling.Color("#2c2c79")
 	case 4:
-		bg = lipgloss.Color("#286994")
+		bg = styling.Color("#286994")
 	case 8:
-		bg = lipgloss.Color("#438594")
+		bg = styling.Color("#438594")
 	case 16:
-		bg = lipgloss.Color("#328570")
+		bg = styling.Color("#328570")
 	case 32:
-		bg = lipgloss.Color("#236d39")
+		bg = styling.Color("#236d39")
 	case 64:
-		bg = lipgloss.Color("#7f9726")
+		bg = styling.Color("#7f9726")
 	case 128:
-		bg = lipgloss.Color("#bd9100")
+		bg = styling.Color("#bd9100")
 	case 256:
-		bg = lipgloss.Color("#c25700")
+		bg = styling.Color("#c25700")
 	case 512:
-		bg = lipgloss.Color("#8f0c0c")
+		bg = styling.Color("#8f0c0c")
 	case 1024:
-		bg = lipgloss.Color("#770059")
+		bg = styling.Color("#770059")
 	case 2048:
-		bg = lipgloss.Color("#55007c")
+		bg = styling.Color("#55007c")
 	}
 
-	fg = lipgloss.Lighten(bg, 0.5)
-	border = lipgloss.Darken(bg, 0.15)
-	newlySpawnedBorder = lipgloss.Lighten(border, 0.3)
+	fg = styling.Lighten(bg, 0.5)
+	border = styling.Darken(bg, 0.15)
+	newlySpawnedBorder = styling.Lighten(border, 0.3)
 	return bg, fg, border, newlySpawnedBorder
 }
 
 func (m model) gameEnd() string {
 	var msg string
-	var popupStyle lipgloss.Style
+	var popupStyle styling.Style
 	switch m.game.State() {
 	case core.WIN:
 		msg = "YOU WIN!\n" +
 			"'r' to start over\n" +
 			"'c' to continue endless\n" +
 			"'q' to quit"
-		popupStyle = lipgloss.NewStyle().
-			Background(lipgloss.Color("#d0df00")).
-			Foreground(lipgloss.Color("#200f24")).
-			Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("#d0df00")).
+		popupStyle = styling.NewStyle().
+			Background(styling.Color("#d0df00")).
+			Foreground(styling.Color("#200f24")).
+			Border(styling.RoundedBorder()).BorderForeground(styling.Color("#d0df00")).
 			Padding(1, 4)
 	case core.DEFEAT:
 		msg = "GAME OVER\n" +
 			"'r' to restart\n" +
 			"'q' to quit"
-		popupStyle = lipgloss.NewStyle().
-			Background(lipgloss.Color("#ce493f")).
-			Foreground(lipgloss.Color("#caffe4")).
-			Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("160")).
+		popupStyle = styling.NewStyle().
+			Background(styling.Color("#ce493f")).
+			Foreground(styling.Color("#caffe4")).
+			Border(styling.RoundedBorder()).BorderForeground(styling.Color("160")).
 			Padding(1, 4)
 	}
 	return popupStyle.Render(msg)

@@ -3,7 +3,8 @@ package tui
 import (
 	"charm.land/bubbles/v2/key"
 	tea "charm.land/bubbletea/v2"
-	"github.com/werener/2048.git/internal/core"
+	"github.com/werener/2048.git/internal/core/games"
+	core "github.com/werener/2048.git/internal/core/models"
 )
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -18,7 +19,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
 		case key.Matches(msg, m.keys.Restart):
-			m.game = core.NewNormalGame()
+			m.game = games.NewNormalGame()
 		case key.Matches(msg, m.keys.Quit):
 			return m, tea.Quit
 		}

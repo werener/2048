@@ -1,62 +1,47 @@
-package core
+package games
 
-type Score uint64
-type GameState int
-
-const (
-	RUNNING GameState = iota
-	DEFEAT
-	WIN
-)
-
-// Game interface represents a set of methods, needed for displaying every visible aspect of a game of 2048
-type Game interface {
-	MakeMove(direction Direction)
-	Score() (score Score)
-	Grid() *Grid
-	State() GameState
-}
+import m "github.com/werener/2048.git/internal/core/models"
 
 // NormalGame is a game, which follows general rules of 2048
 //
 // Implements [Game] interface
 type NormalGame struct {
-	grid  Grid
-	score Score
+	grid  m.Grid
+	score m.Score
 }
 
 // NewNormalGame initializes a [NormalGame]
 func NewNormalGame() *NormalGame {
-	return &NormalGame{grid: NewGrid(4)}
+	return &NormalGame{grid: m.NewGrid(4)}
 }
 
 // Score returns the current score of the game
-func (game *NormalGame) Score() Score {
+func (game *NormalGame) Score() m.Score {
 	return game.score
 }
 
 // Grid returns the current grid state
-func (game *NormalGame) Grid() *Grid {
+func (game *NormalGame) Grid() *m.Grid {
 	return &game.grid
 }
 
 // state returns the current state of the game
-func (game *NormalGame) State() GameState {
+func (game *NormalGame) State() m.GameState {
 	for i := range game.grid.Size {
 		for j := range game.grid.Size {
 			if game.grid.Tiles[i][j].Value == 2048 {
-				return WIN
+				return m.WIN
 			}
 		}
 	}
 
-	for _, direction := range []Direction{Up, Left, Down, Right} {
-		if game.grid.canShift(direction) {
-			return RUNNING
+	for _, direction := range []m.Direction{m.Up, m.Left, m.Down, m.Right} {
+		if game.grid.CanShift(direction) {
+			return m.RUNNING
 		}
 	}
 
-	return DEFEAT
+	return m.DEFEAT
 }
 
 /*
@@ -70,11 +55,11 @@ MakeMove performs a full move cycle in the following order:
  5. Spawns a new random tile, using [Grid.SpawnTile] with [DefaultDistribution].
  6. Increments [NormalGame.score] field by the amount, gained from this move.
 */
-func (game *NormalGame) MakeMove(direction Direction) {
-	if !game.grid.canShift(direction) {
+func (game *NormalGame) MakeMove(direction m.Direction) {
+	if !game.grid.CanShift(direction) {
 		return
 	}
 	game.score += game.grid.Shift(direction)
 
-	game.grid.SpawnTile(DefaultDistribution)
+	game.grid.SpawnTile(m.DefaultDistribution)
 }

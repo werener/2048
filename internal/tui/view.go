@@ -57,7 +57,7 @@ func (m model) gridView(size int) string {
 	rows := make([]string, numTiles)
 
 	// fit to the amount of Tiles
-	size = size / 8 * 8
+	size = size / numTiles * numTiles
 
 	tileSize := size / numTiles
 

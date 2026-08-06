@@ -23,7 +23,7 @@ func (m model) winScreen() string {
 }
 
 func (m model) defeatScreen() string {
-	msg := "YOU LOST :(\n" +
+	msg := "YOU LOST :(\n\n" +
 		fmt.Sprintf("%s Restart\n", m.keys.Restart.Help().Key) +
 		fmt.Sprintf("%s Quit", m.keys.Quit.Help().Key)
 
@@ -38,7 +38,8 @@ func (m model) defeatScreen() string {
 
 func (m model) endlessPopup() string {
 	msg := "You are now entering Endless mode. \n" +
-		"Score gain will be doubled. Tile spawnrate\nis reduced, but higher values can appear\n\n" +
+		"Score gain will be doubled.\n" +
+		"Higher value tiles will spawn.\n\n" +
 
 		fmt.Sprintf("%s to continue", m.keys.Continue.Help().Key)
 

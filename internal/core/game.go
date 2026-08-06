@@ -13,7 +13,7 @@ const (
 type Game interface {
 	MakeMove(direction Direction)
 	Score() (score Score)
-	Grid() Grid
+	Grid() *Grid
 	State() GameState
 }
 
@@ -36,8 +36,8 @@ func (game *NormalGame) Score() Score {
 }
 
 // Grid returns the current grid state
-func (game *NormalGame) Grid() Grid {
-	return game.grid
+func (game *NormalGame) Grid() *Grid {
+	return &game.grid
 }
 
 // state returns the current state of the game

@@ -14,20 +14,84 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyPressMsg:
 		switch {
-		case key.Matches(msg, m.keys.Up):
-			m.game.MakeMove(core.Up)
-		case key.Matches(msg, m.keys.Left):
-			m.game.MakeMove(core.Left)
-		case key.Matches(msg, m.keys.Down):
-			m.game.MakeMove(core.Down)
-		case key.Matches(msg, m.keys.Right):
-			m.game.MakeMove(core.Right)
-
 		case key.Matches(msg, m.keys.Help):
 			m.help.ShowAll = !m.help.ShowAll
+		case key.Matches(msg, m.keys.Restart):
+			m.game = core.NewNormalGame()
 		case key.Matches(msg, m.keys.Quit):
 			return m, tea.Quit
 		}
+
+		// read move keys only if the game is active
+		if m.game.State() == core.RUNNING {
+			switch {
+			case key.Matches(msg, m.keys.Up):
+				m.game.MakeMove(core.Up)
+			case key.Matches(msg, m.keys.Left):
+				m.game.MakeMove(core.Left)
+			case key.Matches(msg, m.keys.Down):
+				m.game.MakeMove(core.Down)
+			case key.Matches(msg, m.keys.Right):
+				m.game.MakeMove(core.Right)
+			}
+		}
 	}
 	return m, nil
+}
+
+type keyMap struct {
+	Up      key.Binding
+	Down    key.Binding
+	Left    key.Binding
+	Right   key.Binding
+	Help    key.Binding
+	Quit    key.Binding
+	Restart key.Binding
+}
+
+var keys = keyMap{
+	Up: key.NewBinding(
+		key.WithKeys("up", "k", "w"),
+		key.WithHelp("w|↑|k", "Up"),
+	),
+	Left: key.NewBinding(
+		key.WithKeys("left", "h", "a"),
+		key.WithHelp("a|←|h", "Left"),
+	),
+	Down: key.NewBinding(
+		key.WithKeys("down", "j", "s"),
+		key.WithHelp("s|↓|j", "Down"),
+	),
+	Right: key.NewBinding(
+		key.WithKeys("right", "l", "d"),
+		key.WithHelp("d|→|l", "Right"),
+	),
+
+	Help: key.NewBinding(
+		key.WithKeys("?", "/"),
+		key.WithHelp("[?]", "Help"),
+	),
+	Quit: key.NewBinding(
+		key.WithKeys("q", "Q", "esc", "ctrl+c"),
+		key.WithHelp("[q]", "Quit"),
+	),
+	Restart: key.NewBinding(
+		key.WithKeys("r", "R"),
+		key.WithHelp("[r]", "Restart"),
+	),
+}
+
+func (k keyMap) ShortHelp() []key.Binding {
+	return []key.Binding{k.Quit, k.Restart, k.Help}
+}
+func (k keyMap) FullHelp() [][]key.Binding {
+	/*
+		q w r
+		a s d
+	*/
+	return [][]key.Binding{
+		{k.Quit, k.Left},     // first column
+		{k.Up, k.Down},       // second column
+		{k.Restart, k.Right}, // third column
+	}
 }

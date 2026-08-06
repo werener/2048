@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"image/color"
 
+	_ "github.com/floatpane/bubble-overlay"
+	overlay "github.com/floatpane/bubble-overlay"
+
 	tea "charm.land/bubbletea/v2"
 	"charm.land/lipgloss/v2"
 	"github.com/werener/2048.git/internal/core"
@@ -33,7 +36,12 @@ func (m model) View() tea.View {
 	score := lipgloss.NewStyle().
 		Height(2).
 		Render(fmt.Sprintf("Your score: %d", m.game.Score()))
+
 	view := window.Render(grid + "\n" + score + "\n" + help)
+
+	if m.game.State() != core.RUNNING {
+		view = overlay.Center(view, m.gameEnd(), m.width, m.height)
+	}
 
 	v := tea.NewView(view)
 	v.AltScreen = true
@@ -62,7 +70,7 @@ func (m model) gridView(size int) string {
 	return lipgloss.NewStyle().
 		Height(size).
 		Width(size * 2).
-		Align(lipgloss.Center).
+		AlignVertical(lipgloss.Center).AlignHorizontal(lipgloss.Center).
 		BorderStyle(lipgloss.NormalBorder()).
 		Render(grid)
 }
@@ -91,7 +99,10 @@ func (m model) tileView(tile core.Tile, size int) string {
 	return style.Render(repr)
 }
 
-func colorTile(tile core.Tile) (bg color.Color, fg color.Color, border color.Color, newlySpawnedBorder color.Color) {
+func colorTile(tile core.Tile) (
+	bg color.Color, fg color.Color,
+	border color.Color, newlySpawnedBorder color.Color,
+) {
 	switch tile.Value {
 	case 2:
 		bg = lipgloss.Color("#2c2c79")
@@ -120,6 +131,26 @@ func colorTile(tile core.Tile) (bg color.Color, fg color.Color, border color.Col
 	fg = lipgloss.Lighten(bg, 0.5)
 	border = lipgloss.Darken(bg, 0.15)
 	newlySpawnedBorder = lipgloss.Lighten(border, 0.3)
-	newlySpawnedBorder = lipgloss.Lighten(border, 0.3)
-	return
+	return bg, fg, border, newlySpawnedBorder
+}
+
+func (m model) gameEnd() string {
+	var msg string
+	var popupStyle lipgloss.Style
+	switch m.game.State() {
+	case core.WIN:
+		msg = "YOU WIN!"
+		popupStyle = lipgloss.NewStyle().
+			Background(lipgloss.Color("#d0df00")).Foreground(lipgloss.Color("#200f24")).
+			Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("#d0df00")).
+			Padding(1, 4)
+	case core.DEFEAT:
+		msg = "GAME OVER"
+		popupStyle = lipgloss.NewStyle().
+			Background(lipgloss.Color("#ce493f")). // Красный
+			Foreground(lipgloss.Color("#caffe4")). // Белый текст
+			Border(lipgloss.RoundedBorder()).BorderForeground(lipgloss.Color("160")).
+			Padding(1, 4)
+	}
+	return popupStyle.Render(msg + "\n'r' to restart\n'q' to quit")
 }

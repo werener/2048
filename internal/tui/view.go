@@ -9,6 +9,7 @@ import (
 
 	tea "charm.land/bubbletea/v2"
 	styling "charm.land/lipgloss/v2"
+	"github.com/werener/2048.git/internal/core/games"
 	core "github.com/werener/2048.git/internal/core/models"
 )
 
@@ -38,9 +39,13 @@ func (m model) View() tea.View {
 	score := styling.NewStyle().
 		Height(1).
 		Render(fmt.Sprintf("Your score: %d", m.game.Score()))
-	undos := styling.NewStyle().
-		Height(2).
-		Render(fmt.Sprintf("You have %d 'Undo'", m.undosLeft))
+
+	undos := ""
+	if _, isNormalGame := m.game.(*games.NormalGame); isNormalGame {
+		undos = styling.NewStyle().
+			Height(2).
+			Render(fmt.Sprintf("You have %d 'Undo'", m.undosLeft))
+	}
 
 	view := window.Render(grid + "\n" + score + "\n" + undos + "\n" + help)
 

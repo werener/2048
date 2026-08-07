@@ -38,8 +38,9 @@ func (m model) defeatScreen() string {
 
 func (m model) endlessPopup() string {
 	msg := "You are now entering Endless mode. \n" +
-		"Score gain will be doubled.\n" +
-		"Higher value tiles will spawn.\n\n" +
+		" - Score gain is doubled.\n" +
+		" - 'Undo' is not available\n" +
+		" - Higher value tiles spawn.\n\n" +
 
 		fmt.Sprintf("%s to continue", m.keys.Continue.Help().Key)
 

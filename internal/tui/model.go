@@ -37,7 +37,7 @@ type model struct {
 func initialModel() model {
 	help := help.New()
 	game, undos := games.NewNormalGame(), 1
-	// *game.Grid() = debugGrid
+	*game.Grid() = debugGrid
 	return model{
 		game:      game,
 		undosLeft: undos,

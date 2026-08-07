@@ -67,3 +67,16 @@ func (g *Grid) SpawnTile(distribution []uint64) {
 
 	g.Tiles[void[0]][void[1]] = randomTile(distribution)
 }
+
+// Clone returns a deep copy of the grid
+func (g *Grid) Clone() Grid {
+	tiles := make([][]Tile, g.Size)
+	for i := range g.Size {
+		tiles[i] = make([]Tile, g.Size)
+		copy(tiles[i], g.Tiles[i])
+	}
+	return Grid{
+		Size:  g.Size,
+		Tiles: tiles,
+	}
+}

@@ -53,7 +53,7 @@ func (game *NormalGame) State() m.GameState {
 
 // Undo returns the game to its state as of last turn
 func (game *NormalGame) Undo() {
-	game.grid = game.prevGrid
+	game.grid.Tiles = game.prevGrid.Tiles
 	game.score = game.prevScore
 }
 
@@ -73,7 +73,8 @@ func (game *NormalGame) MakeMove(direction m.Direction) {
 	if !game.grid.CanShift(direction) {
 		return
 	}
-	game.prevScore, game.prevGrid = game.score, game.grid
+	game.prevGrid = game.grid.Clone()
+	game.prevScore = game.score
 
 	game.score += game.grid.Shift(direction)
 	game.grid.SpawnTile(m.DefaultDistribution)

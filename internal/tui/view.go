@@ -23,21 +23,28 @@ func (m model) View() tea.View {
 
 	availableSquare := min(m.width/2, m.height)
 
-	// account for help menu, score and margin
-	gridSize := availableSquare - 3 - 2 - (2 * margin)
+	gridSize := availableSquare -
+		3 - // help menu
+		1 - // score
+		2 - // undo
+		(2 * margin)
 
 	grid := m.gridView(gridSize)
 
 	help := styling.NewStyle().
-		Height(2).
+		Height(3).
 		Render(m.help.View(m.keys))
 
 	score := styling.NewStyle().
-		Height(2).
+		Height(1).
 		Render(fmt.Sprintf("Your score: %d", m.game.Score()))
+	undos := styling.NewStyle().
+		Height(2).
+		Render(fmt.Sprintf("You have %d 'Undo'", m.undosLeft))
 
-	view := window.Render(grid + "\n" + score + "\n" + help)
+	view := window.Render(grid + "\n" + score + "\n" + undos + "\n" + help)
 
+	// popup logic
 	gameState := m.game.State()
 	if m.showEndlessPopup {
 		view = overlay.Center(view, m.endlessPopup(), m.width, m.height)

@@ -55,7 +55,11 @@ func (m model) updateRunning(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.Right):
 			m.game.MakeMove(core.Right)
 		case key.Matches(msg, m.keys.Undo):
-			// todo
+			ng, isNormalGame := (m.game).(*games.NormalGame)
+			if isNormalGame && m.undosLeft > 0 {
+				ng.Undo()
+				m.undosLeft--
+			}
 		}
 	}
 	return m, nil

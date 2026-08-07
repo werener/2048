@@ -23,27 +23,26 @@ type Size struct {
 
 type Popups struct {
 	showEndlessPopup bool
-
-	showDefeatScreen bool
-	showWinScreen    bool
 }
 
 type model struct {
-	help   help.Model // help component from Bubbles
-	keys   keyMap     // active application keybinds
-	game   core.Game  // current active game. Note: can be nil
-	Size              // termial window size
-	Popups            // determines what popups are currently shown on screen
+	help      help.Model // help component from Bubbles
+	keys      keyMap     // active application keybinds
+	game      core.Game  // current active game. Note: can be nil
+	undosLeft int        // shows the amount of times player can Undo last move
+	Size                 // termial window size
+	Popups               // determines what popups are currently shown on screen
 }
 
 func initialModel() model {
 	help := help.New()
-	game := games.NewNormalGame()
+	game, undos := games.NewNormalGame(), 1
 	// *game.Grid() = debugGrid
 	return model{
-		game: game,
-		help: help,
-		keys: keys,
+		game:      game,
+		undosLeft: undos,
+		help:      help,
+		keys:      keys,
 	}
 }
 
